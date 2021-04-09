@@ -10,7 +10,7 @@ Call the cli tool `ritam` or `ritam.bat` from a command prompt with the option `
 Usage: ritam [OPTIONS] COMMAND [ARGS]...
 
 Options:
-  -e, --endpoint <url>  Endpoint URL the RITAM Device and Application Manager
+  -e, --endpoint <url>  Endpoint URL of the RITAM Device and Application Manager
   --version             Show the version and exit
   -h, --help            Show this message and exit
 

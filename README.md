@@ -1,8 +1,4 @@
 # Reconciliation based IoT Application Management (RITAM)
-The code of the prototype created for my master's thesis
-
-Architectural Decision Records can be found in [`docs/adr`](docs/adr/index)
-
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
 The RITAM Device and Application Manger and the RITAM Orchestrator are implemented as one project, so the same executable is used for both components.
@@ -10,6 +6,8 @@ The implementation of the level-based API, storage, and controllers with the rec
 The TOSCA data model and parser is defined in the [`core/`](core) directory.
 The source of the `ritam` CLI is in the [`cli/`](cli) directory.
 A demo of RITAM is provided in [`demo/`](demo).
+
+Architectural Decision Records can be found in [`docs/adr`](docs/adr/index.md)
 
 ## Running the application in dev mode
 

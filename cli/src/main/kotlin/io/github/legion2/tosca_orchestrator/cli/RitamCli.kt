@@ -10,7 +10,7 @@ import java.net.URI
 
 class RitamCli : CliktCommand(name = "ritam", autoCompleteEnvvar = "RITAM_CLI_COMPLETE") {
     private val url: String by option(
-        "-e", "--endpoint", help = "Endpoint URL the RITAM Device and Application Manager",
+        "-e", "--endpoint", help = "Endpoint URL of the RITAM Device and Application Manager",
         metavar = "<url>"
     ).default("http://localhost:8080")
 
