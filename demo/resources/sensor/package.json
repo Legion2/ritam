@@ -1,0 +1,16 @@
+{
+  "name": "temperature-sensor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Leon Kiefer",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "async-mqtt": "^2.6.1",
+    "mqtt": "^4.2.6",
+    "parse-duration": "^1.0.0"
+  }
+}

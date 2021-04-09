@@ -1,0 +1,46 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+description: Sample tosca archive to illustrate use of a node with multiple artifacts for different life cycle operations of the node
+
+artifact_types:
+  tosca.artifacts.Implementation.Ansible:
+    derived_from: tosca.artifacts.Implementation
+  tosca.artifacts.template.Jinja2:
+    derived_from: tosca.artifacts.template
+
+topology_template:
+  node_templates:
+    dbServer:
+      type: tosca.nodes.Compute
+      artifacts:
+        sw_image:
+          type: tosca.artifacts.Deployment.Image.VM
+          file: http://1.1.1.1/images/ubuntu-14.04.qcow2
+          version: 14.04
+          checksum: e5c1e205f62f3
+          properties:
+            name: vSRX
+            container_format: BARE
+            disk_format: QCOW2
+            min_disk: 1 GB
+            size: 649 MB
+        terminate:
+          type: tosca.artifacts.Implementation.Bash
+          file: implementation/configuration/scripts/terminate.sh
+          version: 6.2
+    dbServer2:
+      type: tosca.nodes.Compute
+      artifacts:
+        configuration:
+          type: tosca.artifacts.Implementation.Ansible
+          file: implementation/configuration/Ansible/configure.yml
+        template_configuration:
+          type: tosca.artifacts.template.Jinja2
+          file: implementation/configuration/templates/template_configuration.jinja2
+      interfaces:
+        Standard:
+          operations:
+            configure:
+              implementation:
+                primary: configuration
+                dependencies: [ template_configuration ]

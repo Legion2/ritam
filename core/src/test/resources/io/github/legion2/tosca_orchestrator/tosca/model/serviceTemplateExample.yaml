@@ -1,0 +1,15 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+topology_template:
+  node_templates:
+    helloWorld:
+      type: SoftwareComponent
+      interfaces:
+        Standard:
+          operations:
+            create:
+              implementation:
+                primary: scripts/helloWorld.sh
+                timeout: 20
+    device:
+      type: Compute

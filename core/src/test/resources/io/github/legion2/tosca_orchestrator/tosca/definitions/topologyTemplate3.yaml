@@ -1,0 +1,31 @@
+node_templates:
+
+  my_block_storage:
+    type: BlockStorage
+    properties:
+      size: 10
+
+  my_web_app_tier_1:
+    type: Compute
+    requirements:
+      - local_storage:
+          node: my_block_storage
+          relationship: storage_attachesto_1
+
+  my_web_app_tier_2:
+    type: Compute
+    requirements:
+      - local_storage:
+          node: my_block_storage
+          relationship: storage_attachesto_2
+
+relationship_templates:
+  storage_attachesto_1:
+    type: MyAttachesTo
+    properties:
+      location: /my_data_location
+
+  storage_attachesto_2:
+    type: MyAttachesTo
+    properties:
+      location: /some_other_data_location

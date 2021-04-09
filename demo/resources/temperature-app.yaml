@@ -1,0 +1,9 @@
+metadata:
+  name: temperature-app
+spec:
+  deviceSelector:
+    type: raspberry-pi
+  inputs:
+    interval: 10s
+    location: ${device.location}
+  serviceTemplate: file:///resources/temperature-sensor-service-template.yaml

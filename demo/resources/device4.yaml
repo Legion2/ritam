@@ -1,0 +1,9 @@
+metadata:
+  name: device4
+  labels:
+    location: outdoor
+    type: raspberry-pi
+spec:
+  properties: 
+    location: outdoor
+  url: "http://device4:8080"

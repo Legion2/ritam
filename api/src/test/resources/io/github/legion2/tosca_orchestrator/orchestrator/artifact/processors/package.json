@@ -1,0 +1,9 @@
+{
+  "name": "scripts",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "parse-duration": "^1.0.0"
+  },
+  "devDependencies": {}
+}

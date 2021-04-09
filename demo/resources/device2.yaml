@@ -1,0 +1,9 @@
+metadata:
+  name: device2
+  labels:
+    location: entrance
+    type: raspberry-pi
+spec:
+  properties: 
+    location: entrance
+  url: "http://device2:8080"

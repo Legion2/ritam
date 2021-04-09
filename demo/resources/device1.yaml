@@ -1,0 +1,9 @@
+metadata:
+  name: device1
+  labels:
+    location: office
+    type: raspberry-pi
+spec:
+  properties: 
+    location: office
+  url: "http://device1:8080"

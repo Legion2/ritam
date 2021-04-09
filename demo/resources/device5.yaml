@@ -1,0 +1,10 @@
+metadata:
+  name: device5
+  labels:
+    location: desk
+    test: "true"
+spec:
+  properties: 
+    location: desk
+    id: "6171847"
+  url: "http://device5:8080"

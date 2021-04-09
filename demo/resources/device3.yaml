@@ -1,0 +1,9 @@
+metadata:
+  name: device3
+  labels:
+    location: office
+    type: smart-screen
+spec:
+  properties: 
+    location: office
+  url: "http://device3:8080"

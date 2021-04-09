@@ -1,0 +1,118 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+imports:
+  - file: https://legion2.github.io/ritam/ritam.yaml
+    namespace_prefix: ritam
+
+capability_types:
+  MQTT-Broker-Endpoint:
+    derived_from: tosca.capabilities.Endpoint
+    valid_source_types: [tosca.nodes.SoftwareComponent]
+
+node_types:
+  MQTT-Broker:
+    derived_from: tosca.nodes.Root
+    properties:
+      MQTT_URL:
+        type: string
+      MQTT_User:
+        type: string
+      MQTT_Password:
+        type: string
+    capabilities:
+      broker: MQTT-Broker-Endpoint
+  Sensor:
+    derived_from: SoftwareComponent
+    properties:
+      interval:
+        type: string
+      location:
+        type: string
+    requirements:
+      - broker:
+          capability: MQTT-Broker-Endpoint
+          relationship: tosca.relationships.ConnectsTo
+          occurrences: [1, 1]
+    interfaces:
+      Reconciler:
+        type: ritam:ritam.interfaces.Reconciler
+        inputs:
+          interval:
+            type: string
+            default: { get_property: [SELF, interval] }
+          location:
+            type: string
+            default: { get_property: [SELF, location] }
+          MQTT_URL:
+            type: string
+          MQTT_User:
+            type: string
+          MQTT_Password:
+            type: string
+        operations:
+          reconcile:
+            implementation:
+              primary: scripts/reconcileSensor.mjs
+              dependencies:
+                - type: File
+                  file: scripts/package.json
+                  deploy_path: package.json
+                - type: File
+                  file: scripts/package-lock.json
+                  deploy_path: package-lock.json
+              timeout: 10
+            outputs:
+              status: [SELF, status]
+          delete:
+            implementation:
+              primary: scripts/deleteSensor.mjs
+              dependencies:
+                - type: File
+                  file: scripts/package.json
+                  deploy_path: package.json
+                - type: File
+                  file: scripts/package-lock.json
+                  deploy_path: package-lock.json
+              timeout: 10
+            outputs:
+              status: [SELF, status]
+              deleted: [SELF, deleted]
+
+topology_template:
+  inputs:
+    interval:
+      type: string
+      description: Temperature polling interval
+    location:
+      type: string
+      description: Location of the temperature sensor
+    MQTT_URL:
+      type: string
+    MQTT_User:
+      type: string
+      default: ""
+    MQTT_Password:
+      type: string
+      default: ""
+
+  node_templates:
+    temp-reader:
+      type: Sensor
+      properties:
+        interval: { get_input: [interval] }
+        location: { get_input: [location] }
+      interfaces:
+        Reconciler:
+          inputs:
+            MQTT_URL: { get_property: [broker, MQTT_URL] }
+            MQTT_User: { get_property: [broker, MQTT_User] }
+            MQTT_Password: { get_property: [broker, MQTT_Password] }
+
+    device:
+      type: Compute
+    broker:
+      type: MQTT-Broker
+      properties:
+        MQTT_URL: { get_input: [MQTT_URL] }
+        MQTT_User: { get_input: [MQTT_User] }
+        MQTT_Password: { get_input: [MQTT_Password] }

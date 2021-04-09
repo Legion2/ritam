@@ -1,0 +1,36 @@
+FROM debian:10
+LABEL org.opencontainers.image.source=https://github.com/Legion2/ritam
+COPY --from=docker:20.10 /usr/local/bin/docker /usr/local/bin/
+
+ARG JAVA_PACKAGE=openjdk-11-jre-headless
+ARG RUN_JAVA_VERSION=1.3.8
+
+ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' ORCHESTRATOR_USER=0
+
+# Install java and the run-java script
+# Also set up permissions for user $ORCHESTRATOR_USER
+RUN apt update \
+    && apt install --no-install-recommends -y curl ca-certificates dumb-init procps ${JAVA_PACKAGE} \
+    && curl -fsSL https://deb.nodesource.com/setup_15.x | bash - \
+    && apt install --no-install-recommends -y nodejs \
+    && npm install pm2 -g \
+    && mkdir /deployments \
+    && chown $ORCHESTRATOR_USER /deployments \
+    && chmod "g+rwX" /deployments \
+    && chown $ORCHESTRATOR_USER:root /deployments \
+    && curl https://repo1.maven.org/maven2/io/fabric8/run-java-sh/${RUN_JAVA_VERSION}/run-java-sh-${RUN_JAVA_VERSION}-sh.sh -o /deployments/run-java.sh \
+    && chown $ORCHESTRATOR_USER /deployments/run-java.sh \
+    && chmod 540 /deployments/run-java.sh
+
+# Configure the JAVA_OPTIONS, you can add -XshowSettings:vm to also display the heap size.
+ENV JAVA_OPTIONS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
+# We make four distinct layers so if there are application changes the library layers can be re-used
+COPY --chown=1001 target/quarkus-app/lib/ /deployments/lib/
+COPY --chown=1001 target/quarkus-app/*.jar /deployments/
+COPY --chown=1001 target/quarkus-app/app/ /deployments/app/
+COPY --chown=1001 target/quarkus-app/quarkus/ /deployments/quarkus/
+
+EXPOSE 8080
+USER $ORCHESTRATOR_USER
+
+ENTRYPOINT ["/usr/bin/dumb-init", "--", "/deployments/run-java.sh"]

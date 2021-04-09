@@ -1,0 +1,85 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+imports:
+  - file: https://legion2.github.io/ritam/ritam.yaml
+    namespace_prefix: ritam
+
+capability_types:
+  MQTT-Broker-Endpoint:
+    derived_from: tosca.capabilities.Endpoint
+    valid_source_types: [ tosca.nodes.SoftwareComponent ]
+
+node_types:
+  MQTT-Broker:
+    derived_from: tosca.nodes.Root
+    properties:
+      MQTT_URL:
+        type: string
+      MQTT_User:
+        type: string
+      MQTT_Password:
+        type: string
+    capabilities:
+      broker: MQTT-Broker-Endpoint
+  Sensor:
+    derived_from: SoftwareComponent
+    properties:
+      temperature_polling_interval:
+        type: integer
+    requirements:
+      - broker:
+          capability: MQTT-Broker-Endpoint
+          relationship: tosca.relationships.ConnectsTo
+          occurrences: [ 1, 1 ]
+    interfaces:
+      Reconciler:
+        type: ritam:ritam.interfaces.Reconciler
+        operations:
+          reconcile:
+            inputs:
+              temperature_polling_interval:
+                type: integer
+                default: { get_property: [ SELF, temperature_polling_interval ] }
+              MQTT_URL:
+                type: string
+              MQTT_User:
+                type: string
+              MQTT_Password:
+                type: string
+            implementation:
+              primary: scripts/reconcileSensor.sh
+              timeout: 30
+            outputs:
+              status: [ SELF, status ]
+
+topology_template:
+  inputs:
+    MQTT_URL:
+      type: string
+    MQTT_User:
+      type: string
+    MQTT_Password:
+      type: string
+
+
+  node_templates:
+    sensor:
+      type: Sensor
+      properties:
+        temperature_polling_interval: 1
+      interfaces:
+        Reconciler:
+          operations:
+            reconcile:
+              inputs:
+                MQTT_URL: { get_property: [ broker, MQTT_URL ] }
+                MQTT_User: { get_property: [ broker, MQTT_User ] }
+                MQTT_Password: { get_property: [ broker, MQTT_Password ] }
+    device:
+      type: Compute
+    broker:
+      type: MQTT-Broker
+      properties:
+        MQTT_URL: { get_input: [ MQTT_URL ] }
+        MQTT_User: { get_input: [ MQTT_User ] }
+        MQTT_Password: { get_input: [ MQTT_Password ] }

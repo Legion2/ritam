@@ -1,0 +1,2 @@
+io.github.legion2.tosca_orchestrator.orchestrator.artifact.processors.BashArtifactProcessorManager
+io.github.legion2.tosca_orchestrator.orchestrator.artifact.processors.JSArtifactProcessorManager

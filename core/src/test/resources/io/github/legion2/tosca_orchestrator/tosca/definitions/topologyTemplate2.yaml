@@ -1,0 +1,30 @@
+node_templates:
+  dbServer:
+    type: tosca.nodes.Compute
+    properties:
+      name: dbServer
+      description: bla
+    artifacts:
+      sw_image:
+        description: Image for virtual machine
+        type: tosca.artifacts.Deployment.Image.VM
+        file: http://10.10.86.141/images/Juniper_vSRX_15.1x49_D80_preconfigured.qcow2
+        checksum: ba411cafee2f0f702572369da0b765e2
+        version: 3.2
+        checksum_algorithm: MD5
+        properties:
+          name: vSRX
+          container_format: BARE
+          disk_format: QCOW2
+          min_disk: 1 GB
+          size: 649 MB
+
+      configuration:
+        type: tosca.artifacts.Implementation.Ansible
+        file: implementation/configuration/Ansible/configure.yml
+        version: 2.0
+
+      terminate:
+        type: tosca.artifacts.Implementation.scripts
+        file: implementation/configuration/scripts/terminate.sh
+        version: 6.2

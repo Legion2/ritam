@@ -1,0 +1,40 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+imports:
+  - https://legion2.github.io/ritam/ritam.yaml
+
+node_types:
+  hello_type:
+    derived_from: tosca.nodes.SoftwareComponent
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        inputs:
+          marker:
+            default: { get_input: marker }
+            type: string
+        operations:
+          create:
+            implementation:
+              primary:
+                type: Bash
+                file: script.sh
+          delete: scripts/delete.mjs
+
+topology_template:
+  inputs:
+    marker:
+      type: string
+      default: default-marker
+
+  node_templates:
+    my-workstation:
+      type: tosca.nodes.Compute
+      attributes:
+        private_address: localhost
+        public_address: localhost
+
+    hello:
+      type: hello_type
+      requirements:
+        - host: my-workstation
