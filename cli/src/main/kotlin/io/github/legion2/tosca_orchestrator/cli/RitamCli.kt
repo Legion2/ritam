@@ -15,7 +15,7 @@ class RitamCli : CliktCommand(name = "ritam", autoCompleteEnvvar = "RITAM_CLI_CO
     ).default("http://localhost:8080")
 
     init {
-        versionOption("0.3.0")
+        versionOption("0.4.0-SNAPSHOT")
     }
 
     override fun run() {
