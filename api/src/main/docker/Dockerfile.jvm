@@ -31,4 +31,5 @@ COPY --chown=1001 target/quarkus-app/quarkus/ /deployments/quarkus/
 EXPOSE 8080
 USER $ORCHESTRATOR_USER
 
-ENTRYPOINT ["/usr/bin/dumb-init", "--", "/deployments/run-java.sh"]
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+CMD ["/deployments/run-java.sh"]
