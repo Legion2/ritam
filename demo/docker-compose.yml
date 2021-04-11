@@ -3,7 +3,6 @@ services:
   manager:
     image: ghcr.io/legion2/ritam-api:0.3.0
     restart: unless-stopped
-    command: [ "/resources/manager-entrypoint.sh" ]
     ports:
       - "8080:8080"
     volumes:
@@ -11,6 +10,7 @@ services:
   device1:
     image: ghcr.io/legion2/ritam-api:0.3.0
     restart: unless-stopped
+    command: [ "/resources/device-entrypoint.sh" ]
     ports:
       - "8081:8080"
     volumes:
@@ -18,6 +18,7 @@ services:
   device2:
     image: ghcr.io/legion2/ritam-api:0.3.0
     restart: unless-stopped
+    command: [ "/resources/device-entrypoint.sh" ]
     ports:
       - "8082:8080"
     volumes:
@@ -25,6 +26,7 @@ services:
   device3:
     image: ghcr.io/legion2/ritam-api:0.3.0
     restart: unless-stopped
+    command: [ "/resources/device-entrypoint.sh" ]
     ports:
       - "8083:8080"
     volumes:
@@ -32,6 +34,7 @@ services:
   device4:
     image: ghcr.io/legion2/ritam-api:0.3.0
     restart: unless-stopped
+    command: [ "/resources/device-entrypoint.sh" ]
     ports:
       - "8084:8080"
     volumes:
@@ -39,12 +42,20 @@ services:
   device5:
     image: ghcr.io/legion2/ritam-api:0.3.0
     restart: unless-stopped
+    command: [ "/resources/device-entrypoint.sh" ]
     ports:
       - "8085:8080"
     volumes:
       - ./resources:/resources:ro
+  manager-setup:
+    build: manager-setup
+    volumes:
+      - ./resources:/resources:ro
+    depends_on:
+      manager:
+        condition: service_healthy
   broker:
-    build: ./mosquitto
+    build: mosquitto
     restart: unless-stopped
     ports:
       - 1883:1883

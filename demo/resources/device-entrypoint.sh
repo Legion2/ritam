@@ -2,5 +2,5 @@
 
 set -e -o pipefail
 
-/resources/manager-setup.sh
+pm2 ping &> /dev/null
 exec /deployments/run-java.sh "$@"
