@@ -15,10 +15,6 @@ node_types:
     properties:
       MQTT_URL:
         type: string
-      MQTT_User:
-        type: string
-      MQTT_Password:
-        type: string
     capabilities:
       broker: MQTT-Broker-Endpoint
   Sensor:
@@ -47,10 +43,6 @@ node_types:
                 default: { get_property: [ SELF, location ] }
               MQTT_URL:
                 type: string
-              MQTT_User:
-                type: string
-              MQTT_Password:
-                type: string
             implementation:
               primary: scripts/reconcileSensor.sh
               timeout: 30
@@ -63,11 +55,6 @@ topology_template:
       type: string
     MQTT_URL:
       type: string
-    MQTT_User:
-      type: string
-    MQTT_Password:
-      type: string
-
 
   node_templates:
     sensor:
@@ -81,13 +68,10 @@ topology_template:
             reconcile:
               inputs:
                 MQTT_URL: { get_property: [ broker, MQTT_URL ] }
-                MQTT_User: { get_property: [ broker, MQTT_User ] }
-                MQTT_Password: { get_property: [ broker, MQTT_Password ] }
+
     device:
       type: Compute
     broker:
       type: MQTT-Broker
       properties:
         MQTT_URL: { get_input: [ MQTT_URL ] }
-        MQTT_User: { get_input: [ MQTT_User ] }
-        MQTT_Password: { get_input: [ MQTT_Password ] }

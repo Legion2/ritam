@@ -39,7 +39,7 @@ internal class ApplicationTemplateResourceTest {
                 .toUri()
 
         val inputs =
-            mapOf("MQTT_URL" to "", "MQTT_User" to "", "MQTT_Password" to "", "location" to "\${device.location}")
+            mapOf("MQTT_URL" to "", "location" to "\${device.location}")
 
         val application = ApplicationTemplate(labels, inputs, uri)
         val applicationTemplateResource = given().contentType(MediaType.APPLICATION_JSON)

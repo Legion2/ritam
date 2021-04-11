@@ -37,7 +37,7 @@ internal class ApplicationResourceTest {
             Path.of("src/test/resources/io/github/legion2/tosca_orchestrator/tosca/model/sensor.yaml")
                 .toUri()
 
-        val inputs = mapOf("MQTT_URL" to "", "MQTT_User" to "", "MQTT_Password" to "", "location" to  "")
+        val inputs = mapOf("MQTT_URL" to "", "location" to  "")
         val application = Application(uri, inputs)
         val applicationResource = given().contentType(MediaType.APPLICATION_JSON)
             .body(ApplicationResource(Metadata(name), application))
@@ -73,7 +73,7 @@ internal class ApplicationResourceTest {
             Path.of("src/test/resources/io/github/legion2/tosca_orchestrator/tosca/model/sensor.yaml")
                 .toUri()
 
-        val inputs = mapOf("MQTT_URL" to "", "MQTT_User" to "", "MQTT_Password" to "", "location" to "")
+        val inputs = mapOf("MQTT_URL" to "", "location" to "")
         val application = Application(uri, inputs)
         given().contentType(MediaType.APPLICATION_JSON)
             .body(ApplicationResource(Metadata(name), application))

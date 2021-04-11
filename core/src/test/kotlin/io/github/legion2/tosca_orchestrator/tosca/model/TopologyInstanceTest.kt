@@ -49,7 +49,7 @@ internal class TopologyInstanceTest {
     @Test
     fun testSensorExample() {
         val path = javaClass.getResource("sensor.yaml").toURI()
-        val inputs = mapOf("MQTT_URL" to "", "MQTT_User" to "", "MQTT_Password" to "")
+        val inputs = mapOf("MQTT_URL" to "")
         val instanceModel = createInstanceModel(path, inputs)
     }
 

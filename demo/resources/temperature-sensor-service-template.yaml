@@ -15,10 +15,6 @@ node_types:
     properties:
       MQTT_URL:
         type: string
-      MQTT_User:
-        type: string
-      MQTT_Password:
-        type: string
     capabilities:
       broker: MQTT-Broker-Endpoint
   Sensor:
@@ -44,10 +40,6 @@ node_types:
             type: string
             default: { get_property: [SELF, location] }
           MQTT_URL:
-            type: string
-          MQTT_User:
-            type: string
-          MQTT_Password:
             type: string
         operations:
           reconcile:
@@ -88,12 +80,6 @@ topology_template:
       description: Location of the temperature sensor
     MQTT_URL:
       type: string
-    MQTT_User:
-      type: string
-      default: ""
-    MQTT_Password:
-      type: string
-      default: ""
 
   node_templates:
     temp-reader:
@@ -105,8 +91,6 @@ topology_template:
         Reconciler:
           inputs:
             MQTT_URL: { get_property: [broker, MQTT_URL] }
-            MQTT_User: { get_property: [broker, MQTT_User] }
-            MQTT_Password: { get_property: [broker, MQTT_Password] }
 
     device:
       type: Compute
@@ -114,5 +98,3 @@ topology_template:
       type: MQTT-Broker
       properties:
         MQTT_URL: { get_input: [MQTT_URL] }
-        MQTT_User: { get_input: [MQTT_User] }
-        MQTT_Password: { get_input: [MQTT_Password] }
