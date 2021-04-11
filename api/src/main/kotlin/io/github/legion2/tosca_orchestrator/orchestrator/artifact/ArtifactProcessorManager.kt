@@ -1,5 +1,6 @@
 package io.github.legion2.tosca_orchestrator.orchestrator.artifact
 
+import io.github.legion2.tosca_orchestrator.orchestrator.model.DeploymentArtifact
 import io.github.legion2.tosca_orchestrator.tosca.model.resolved.ResolvedArtifact
 import io.github.legion2.tosca_orchestrator.tosca.model.resolved.type.ResolvedArtifactType
 import java.nio.file.Files
@@ -8,11 +9,12 @@ import java.nio.file.StandardCopyOption
 
 interface ArtifactProcessorManager {
     suspend fun process(
-            artifact: ResolvedArtifact,
-            executionEnvironment: ExecutionEnvironment,
-            inputs: Map<String, String>,
-            outputs: Set<String>,
-            dependencies: List<ResolvedArtifact>
+        artifact: ResolvedArtifact,
+        executionEnvironment: ExecutionEnvironment,
+        inputs: Map<String, String>,
+        outputs: Set<String>,
+        dependencies: List<ResolvedArtifact>,
+        deploymentArtifacts: List<DeploymentArtifact>
     ): Map<String, String>
 
     fun canProcess(type: ResolvedArtifactType): Boolean
@@ -31,6 +33,36 @@ fun copyArtifact(
     }
     Files.copy(artifact.file.toURL().openStream(), artifactPath, StandardCopyOption.REPLACE_EXISTING)
     return artifactPath
+}
+
+suspend fun <T> withDeploymentArtifacts(
+    executionEnvironment: ExecutionEnvironment,
+    deploymentArtifacts: List<DeploymentArtifact>,
+    block: suspend () -> T
+): T {
+    val deploymentArtifactsPaths = deploymentArtifacts.mapNotNull {
+        copyArtifact(it.artifact.copy(deployPath = it.location), executionEnvironment, "").run { if (it.remove) this else null }
+    }
+
+    val t = block.invoke()
+
+    deploymentArtifactsPaths.forEach(Files::delete)
+    return t
+}
+
+suspend fun <T> withDependencies(
+    executionEnvironment: ExecutionEnvironment,
+    dependencies: List<ResolvedArtifact>,
+    block: suspend () -> T
+): T {
+    val dependencyPaths = dependencies.filter { it.deployPath != null }.map {
+        copyArtifact(it, executionEnvironment, "")
+    }
+
+    val t = block.invoke()
+
+    dependencyPaths.forEach(Files::delete)
+    return t
 }
 
 suspend fun withInputOutputEnvironmentVariables(

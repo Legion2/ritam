@@ -3,8 +3,6 @@ package io.github.legion2.tosca_orchestrator.orchestrator.controller
 import io.github.legion2.tosca_orchestrator.orchestrator.add
 import io.github.legion2.tosca_orchestrator.orchestrator.artifact.ExecutionEngine
 import io.github.legion2.tosca_orchestrator.orchestrator.controller.common.*
-import io.github.legion2.tosca_orchestrator.orchestrator.evaluation.ComponentContext
-import io.github.legion2.tosca_orchestrator.orchestrator.evaluation.DynamicEvaluationContext
 import io.github.legion2.tosca_orchestrator.orchestrator.model.*
 import io.github.legion2.tosca_orchestrator.orchestrator.put
 import io.github.legion2.tosca_orchestrator.orchestrator.remove
@@ -110,7 +108,7 @@ class ComponentController {
             runBlocking {
                 executionEngine.executeOperation(
                     modifiedResource.spec.reconciler.reconcile,
-                    getDynamicEvaluationContext(dependencies)
+                    dependencies
                 )
             }
         }.getOrElse {
@@ -131,7 +129,7 @@ class ComponentController {
                 runBlocking {
                     executionEngine.executeOperation(
                         resource.spec.reconciler.deletion,
-                        getDynamicEvaluationContext(dependencies)
+                        dependencies
                     )
                 }
             } catch (e: Throwable) {
@@ -171,13 +169,7 @@ class ComponentController {
 
 private const val deletedOutputParameterName =  "deleted"
 
-private fun getDynamicEvaluationContext(dependencies: List<ComponentResource>): DynamicEvaluationContext {
-    return DynamicEvaluationContext(
-        dependencies.associate { it.metadata.name to ComponentContext(it.status!!.attributes) },
-        emptyMap(),
-        nodeSelf = null
-    )
-}
+
 
 private fun ComponentStorage.updateStatus(resource: ComponentResource, message: String, attributes: Map<String, Value>? = null) =
     putResourceStatus(resource.metadata.name, ComponentStatus(message, OffsetDateTime.now(), attributes ?: resource.status?.attributes.orEmpty()))

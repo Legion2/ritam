@@ -3,6 +3,7 @@ package io.github.legion2.tosca_orchestrator.orchestrator.model
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import io.github.legion2.tosca_orchestrator.tosca.model.property.EntityReference
 import io.github.legion2.tosca_orchestrator.tosca.model.property.ResolvedPropertyNameOrIndex
+import io.github.legion2.tosca_orchestrator.tosca.model.resolved.ResolvedArtifact
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, include = JsonTypeInfo.As.WRAPPER_OBJECT)
 sealed class DynamicExpression {
@@ -20,13 +21,24 @@ sealed class DynamicExpression {
         data class Token(
             val string_with_token: DynamicExpression,
             val string_of_token_chars: String,
-            val substring_index: Int
+            val substring_index: Int,
         ) : Function()
 
         data class GetAttribute(
             val entityName: EntityReference,
             val req_or_cap_name: String?,
-            val attribute_name: List<ResolvedPropertyNameOrIndex>
+            val attribute_name: List<ResolvedPropertyNameOrIndex>,
+        ) : Function()
+
+        data class GetArtifact(
+            val deploymentArtifact: DeploymentArtifact
         ) : Function()
     }
 }
+
+data class DeploymentArtifact(
+    val artifact: ResolvedArtifact,
+    val location: String,
+    val remove: Boolean,
+)
+

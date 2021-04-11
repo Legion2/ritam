@@ -1,6 +1,8 @@
 package io.github.legion2.tosca_orchestrator.orchestrator.evaluation
 
+import io.github.legion2.tosca_orchestrator.orchestrator.model.DeploymentArtifact
 import io.github.legion2.tosca_orchestrator.orchestrator.model.DynamicExpression
+import io.github.legion2.tosca_orchestrator.tosca.definitions.Location
 import io.github.legion2.tosca_orchestrator.tosca.model.addExceptionContextInfo
 import io.github.legion2.tosca_orchestrator.tosca.model.instance.NodeInstance
 import io.github.legion2.tosca_orchestrator.tosca.model.instance.PropertyInstance
@@ -46,7 +48,7 @@ data class StaticEvaluationContext(
         DynamicExpression.Literal.List(nodes.values.filter { it.typeInfo.isSubtypeOf(expression.nodeType) }
             .map { DynamicExpression.Literal.String(it.name) })
 
-    private fun getArtifact(expression: ResolvedExpression.Function.GetArtifact): DynamicExpression.Literal.String {
+    private fun getArtifact(expression: ResolvedExpression.Function.GetArtifact): DynamicExpression.Function.GetArtifact {
         val nodeInstance = when (val entityName = expression.entityName) {
             is EntityReference.NodeReference -> nodes[entityName.name]
                 ?: throw IllegalArgumentException("There is no node with the name: $entityName")
@@ -56,8 +58,17 @@ data class StaticEvaluationContext(
         }
         val artifact = nodeInstance.artifacts[expression.artifact_name]
             ?: throw IllegalArgumentException("Artifact not defined: ${expression.artifact_name}")
-        //TODO side effect
-        return DynamicExpression.Literal.String(artifact.file.toASCIIString())
+
+        val location = when (val location = expression.location) {
+            Location.LOCAL_FILE -> "${nodeInstance.name}-${expression.artifact_name}"
+            is Location.Path -> location.path
+            null -> artifact.deployPath
+                ?: throw IllegalArgumentException("Location of Artifact not set: ${nodeInstance.name} ${expression.artifact_name}")
+        }
+
+        val remove = expression.remove ?: expression.location == Location.LOCAL_FILE
+
+        return DynamicExpression.Function.GetArtifact(DeploymentArtifact(artifact, location, remove))
     }
 
     private fun getProperty(expression: ResolvedExpression.Function.GetProperty): DynamicExpression =

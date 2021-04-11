@@ -2,6 +2,7 @@ package io.github.legion2.tosca_orchestrator.orchestrator.artifact.processors
 
 import io.github.legion2.tosca_orchestrator.orchestrator.artifact.ExecutionEnvironment
 import io.github.legion2.tosca_orchestrator.orchestrator.javascript
+import io.github.legion2.tosca_orchestrator.orchestrator.model.DeploymentArtifact
 import io.github.legion2.tosca_orchestrator.tosca.model.TypeInfo
 import io.github.legion2.tosca_orchestrator.tosca.model.resolved.ResolvedArtifact
 import io.github.legion2.tosca_orchestrator.tosca.model.resolved.type.ResolvedArtifactType
@@ -18,11 +19,12 @@ internal class JSArtifactProcessorManagerTest {
         val executionEnvironment = ExecutionEnvironment.getExecutionEnvironment()
 
         val output = JSArtifactProcessorManager().process(
-                artifact,
-                executionEnvironment,
-                mapOf("input" to "foo"),
-                setOf("status", "input"),
-                emptyList()
+            artifact,
+            executionEnvironment,
+            mapOf("input" to "foo"),
+            setOf("status", "input"),
+            emptyList(),
+            emptyList()
         )
         assertEquals("example status", output["status"]?.trim())
         assertEquals("input: foo", output["input"]?.trim())
@@ -40,13 +42,35 @@ internal class JSArtifactProcessorManagerTest {
         val executionEnvironment = ExecutionEnvironment.getExecutionEnvironment()
 
         val output = JSArtifactProcessorManager().process(
-                artifact,
-                executionEnvironment,
-                mapOf("duration" to "10s"),
-                setOf("duration"),
-                listOf(packageJsonArtifact, packageLockArtifact)
+            artifact,
+            executionEnvironment,
+            mapOf("duration" to "10s"),
+            setOf("duration"),
+            listOf(packageJsonArtifact, packageLockArtifact),
+            emptyList()
         )
         assertEquals("10000", output["duration"]?.trim())
         executionEnvironment.cleanup()
     }
+
+    @Test
+    fun testDeploymentArtifact() = runBlocking {
+        val uri = this@JSArtifactProcessorManagerTest.javaClass.getResource("script-check-deployment-artifact.mjs").toURI()
+        val daUri = this@JSArtifactProcessorManagerTest.javaClass.getResource("deploymentArtifact.txt").toURI()
+        val artifact = ResolvedArtifact(ResolvedArtifactType(TypeInfo(javascript)), uri)
+        val da = ResolvedArtifact(ResolvedArtifactType(TypeInfo(NormativeArtifactTypes.file)), daUri)
+        val executionEnvironment = ExecutionEnvironment.getExecutionEnvironment()
+
+        val output = JSArtifactProcessorManager().process(
+            artifact,
+            executionEnvironment,
+            mapOf("DA_Path" to "da.txt"),
+            setOf("da_exists"),
+            emptyList(),
+            listOf(DeploymentArtifact(da, "da.txt", true))
+        )
+        assertEquals("true", output["da_exists"]?.trim())
+        executionEnvironment.cleanup()
+    }
+
 }

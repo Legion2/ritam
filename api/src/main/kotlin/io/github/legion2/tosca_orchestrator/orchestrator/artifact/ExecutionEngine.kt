@@ -3,7 +3,10 @@ package io.github.legion2.tosca_orchestrator.orchestrator.artifact
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.github.legion2.tosca_orchestrator.orchestrator.artifact.ExecutionEnvironment.Companion.getExecutionEnvironment
+import io.github.legion2.tosca_orchestrator.orchestrator.evaluation.ComponentContext
 import io.github.legion2.tosca_orchestrator.orchestrator.evaluation.DynamicEvaluationContext
+import io.github.legion2.tosca_orchestrator.orchestrator.model.ComponentResource
+import io.github.legion2.tosca_orchestrator.orchestrator.model.DeploymentArtifact
 import io.github.legion2.tosca_orchestrator.orchestrator.model.ReconcileFunction
 import io.github.legion2.tosca_orchestrator.tosca.model.property.Value
 import io.github.legion2.tosca_orchestrator.tosca.model.property.fromRawValue
@@ -33,13 +36,17 @@ class ExecutionEngine {
 
     suspend fun executeOperation(
         interfaceInstance: ReconcileFunction,
-        evaluationContext: DynamicEvaluationContext
+        dependencies: List<ComponentResource>
     ): Map<String, Value> {
         val timeout = interfaceInstance.timeout ?: defaultTimeout
         val primary = interfaceInstance.artifact
-        val dependencies = interfaceInstance.dependencies
-        val inputs = interfaceInstance.inputs.mapValues { evaluationContext.evaluate(it.value) }
-            .mapValues { objectMapper.writeValueAsString(it.value.rawValue) }
+        val dependencyArtifacts = interfaceInstance.dependencies
+
+        val (inputs, deploymentArtifacts) = withEvaluationContext(dependencies) { evaluationContext ->
+            interfaceInstance.inputs.mapValues { evaluationContext.evaluate(it.value) }
+                .mapValues { objectMapper.writeValueAsString(it.value.rawValue) }
+        }
+
         val outputs = interfaceInstance.outputs.keys
         return if (primary != null) {
             val executionEnvironment = getExecutionEnvironment()
@@ -47,7 +54,7 @@ class ExecutionEngine {
                 val artifactProcessor = getArtifactProcessor(primary)
                 LOG.debug("Start processing of reconciler artifact")
                 withTimeout(timeout.toMillis()) {
-                    artifactProcessor.process(primary, executionEnvironment, inputs, outputs, dependencies)
+                    artifactProcessor.process(primary, executionEnvironment, inputs, outputs, dependencyArtifacts, deploymentArtifacts)
                 }
             } finally {
                 LOG.debug("Finished processing of reconciler artifact")
@@ -79,8 +86,22 @@ class ExecutionEngine {
     fun getArtifactProcessor(resolvedArtifact: ResolvedArtifact): ArtifactProcessorManager {
         return artifactProcessorManagers.find {
             kotlin.runCatching { it.canProcess(resolvedArtifact.type) }.getOrDefault(false)
-        } ?: throw IllegalArgumentException("artifact type '${resolvedArtifact.type}' is not supported by any Artifact Processor")
+        }
+            ?: throw IllegalArgumentException("artifact type '${resolvedArtifact.type}' is not supported by any Artifact Processor")
     }
 
+    private fun <T> withEvaluationContext(
+        dependencies: List<ComponentResource>,
+        block: (DynamicEvaluationContext) -> T
+    ): Pair<T, List<DeploymentArtifact>> {
+        val deploymentArtifacts = mutableListOf<DeploymentArtifact>()
+        return DynamicEvaluationContext(
+            dependencies.associate { it.metadata.name to ComponentContext(it.status!!.attributes) },
+            emptyMap(),
+            nodeSelf = null,
+            registerDeploymentArtifact = deploymentArtifacts::add
+        ).run(block) to deploymentArtifacts
+    }
 }
+
 

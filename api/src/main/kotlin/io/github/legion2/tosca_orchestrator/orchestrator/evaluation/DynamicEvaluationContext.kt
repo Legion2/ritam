@@ -1,5 +1,6 @@
 package io.github.legion2.tosca_orchestrator.orchestrator.evaluation
 
+import io.github.legion2.tosca_orchestrator.orchestrator.model.DeploymentArtifact
 import io.github.legion2.tosca_orchestrator.orchestrator.model.DynamicExpression
 import io.github.legion2.tosca_orchestrator.tosca.model.property.EntityReference
 import io.github.legion2.tosca_orchestrator.tosca.model.property.ResolvedPropertyNameOrIndex
@@ -17,7 +18,8 @@ data class DynamicEvaluationContext(
     private val nodes: Map<String, ComponentContext>,
     private val relationships: Map<String, RelationshipContext>,
     private val nodeSelf: ComponentContext? = null,
-    private val relationshipSelf: RelationshipContext? = null
+    private val relationshipSelf: RelationshipContext? = null,
+    private val registerDeploymentArtifact: (deploymentArtifact: DeploymentArtifact) -> Unit,
 ) {
 
     fun evaluate(expression: DynamicExpression): Value {
@@ -31,7 +33,13 @@ data class DynamicEvaluationContext(
             is DynamicExpression.Function.Join -> join(expression)
             is DynamicExpression.Function.Token -> split(expression)
             is DynamicExpression.Function.GetAttribute -> getAttribute(expression) //TODO dynamic
+            is DynamicExpression.Function.GetArtifact -> getArtifact(expression)
         }
+    }
+
+    private fun getArtifact(expression: DynamicExpression.Function.GetArtifact): Value.String {
+        registerDeploymentArtifact(expression.deploymentArtifact)
+        return Value.String(expression.deploymentArtifact.location)
     }
 
     private fun getAttribute(expression: DynamicExpression.Function.GetAttribute): Value {

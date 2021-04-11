@@ -25,11 +25,12 @@ internal class BashArtifactProcessorManagerTest {
         val executionEnvironment = ExecutionEnvironment.getExecutionEnvironment()
 
         val output = BashArtifactProcessorManager().process(
-                artifact,
-                executionEnvironment,
-                mapOf("input" to "foo"),
-                setOf("status", "input"),
-                emptyList()
+            artifact,
+            executionEnvironment,
+            mapOf("input" to "foo"),
+            setOf("status", "input"),
+            emptyList(),
+            emptyList()
         )
         assertEquals("example status", output["status"]?.trim())
         assertEquals("input: foo", output["input"]?.trim())
@@ -44,11 +45,12 @@ internal class BashArtifactProcessorManagerTest {
         val executionEnvironment = ExecutionEnvironment.getExecutionEnvironment()
 
         val output = BashArtifactProcessorManager().process(
-                artifact,
-                executionEnvironment,
-                emptyMap(),
-                setOf("filename"),
-                emptyList()
+            artifact,
+            executionEnvironment,
+            emptyMap(),
+            setOf("filename"),
+            emptyList(),
+            emptyList()
         )
         assertThat(output["filename"]?.trim(), fileName)
         executionEnvironment.cleanup()
