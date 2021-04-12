@@ -32,6 +32,7 @@ jobs:
       - name: Build with Maven
         run: ./mvnw -B package --file pom.xml 
         env:
+          QUARKUS_CONTAINER_IMAGE_TAG: latest
           QUARKUS_CONTAINER_IMAGE_PUSH: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}
   build-cli:
     runs-on: ubuntu-latest

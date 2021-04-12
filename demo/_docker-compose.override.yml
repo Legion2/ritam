@@ -1,14 +1,14 @@
 version: "3"
 services:
   manager:
-    image: ghcr.io/legion2/ritam-api:0.5.0-SNAPSHOT
+    image: ghcr.io/legion2/ritam-api:latest
   device1:
-    image: ghcr.io/legion2/ritam-api:0.5.0-SNAPSHOT
+    image: ghcr.io/legion2/ritam-api:latest
   device2:
-    image: ghcr.io/legion2/ritam-api:0.5.0-SNAPSHOT
+    image: ghcr.io/legion2/ritam-api:latest
   device3:
-    image: ghcr.io/legion2/ritam-api:0.5.0-SNAPSHOT
+    image: ghcr.io/legion2/ritam-api:latest
   device4:
-    image: ghcr.io/legion2/ritam-api:0.5.0-SNAPSHOT
+    image: ghcr.io/legion2/ritam-api:latest
   device5:
-    image: ghcr.io/legion2/ritam-api:0.5.0-SNAPSHOT
+    image: ghcr.io/legion2/ritam-api:latest

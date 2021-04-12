@@ -63,12 +63,3 @@ operations:
     outputs:
       deleted: [SELF, deleted]
 ```
-
-## Release new Version
-
-The release process has two phases, in the first phase a new version is released, in the second phase a new development version is set.
-1. Replace `x.y.z-SNAPSHOT` with new version, also replace last release version with new version.
-2. Commit, and push the changes.
-3. Create release in GitHub.
-3. Then replace the new version with the new development snapshot version.
-4. Commit and push the changes.

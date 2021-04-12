@@ -16,7 +16,7 @@ class RitamCli : CliktCommand(name = "ritam", autoCompleteEnvvar = "RITAM_CLI_CO
     ).default("http://localhost:8080")
 
     init {
-        versionOption("0.5.0-SNAPSHOT")
+        versionOption("0.5.0")
         context {
             autoEnvvarPrefix = "RITAM_CLI"
         }
