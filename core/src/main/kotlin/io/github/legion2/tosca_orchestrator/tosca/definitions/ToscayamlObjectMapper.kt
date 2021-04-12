@@ -9,23 +9,23 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 
 val toscaYamlMapper by lazy {
-    val mapper = ObjectMapper(YAMLFactory().configure(YAMLGenerator.Feature.MINIMIZE_QUOTES, true).disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER))
-    mapper.registerKotlinModule()
-    mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
-    mapper.enable(DeserializationFeature.FAIL_ON_NULL_CREATOR_PROPERTIES)
-    mapper.enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
-    mapper
+    ObjectMapper(YAMLFactory().configure(YAMLGenerator.Feature.MINIMIZE_QUOTES, true).disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)).apply {
+        findAndRegisterModules()
+        setSerializationInclusion(JsonInclude.Include.NON_NULL)
+        enable(DeserializationFeature.FAIL_ON_NULL_CREATOR_PROPERTIES)
+        enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+    }
 }
 
 abstract class OrderedMappingConverter<K, T> : StdConverter<List<Map<K, T>>, Map<K, T>>() {
     override fun convert(list: List<Map<K, T>>): Map<K, T> {
-        return list.map { wrapper ->
+        return list.associate { wrapper ->
             if (wrapper.size != 1) {
                 throw IllegalArgumentException("Only one mapping per list entry")
             }
             val entry = wrapper.entries.toList()[0]
             entry.toPair()
-        }.toMap()
+        }
     }
 }
 

@@ -1,5 +1,5 @@
 # Reconciliation based IoT Application Management (RITAM)
-This project is part of the masters thesis "Concept and Implementation of a TOSCA Orchestration Engine for Edge and IoT Infrastructures".
+This project is part of the master's thesis "Concept and Implementation of a TOSCA Orchestration Engine for Edge and IoT Infrastructures".
 This repository contains the prototype of RITAM.
 
 The RITAM Device and Application Manger and the RITAM Orchestrator are implemented in the same executable.

@@ -584,7 +584,7 @@ node_types:
         constraints:
           - greater_or_equal: 0 MB
         required: false
-    capabilities:
+    # capabilities:
     # TBD
   tosca.nodes.ObjectStorage:
     derived_from: tosca.nodes.Abstract.Storage

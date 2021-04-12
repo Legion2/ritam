@@ -1,8 +1,12 @@
 package io.github.legion2.tosca_orchestrator.cli
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.fasterxml.jackson.module.kotlin.treeToValue
@@ -47,7 +51,17 @@ data class Resource(val metadata: Map<String, Any>, val spec: Any, val status: A
 
 val Resource.name: String get() = metadata.getValue("name") as String
 
-val objectMapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
+val objectMapper by lazy {
+    YAMLMapper(
+        YAMLFactory()
+            .enable(YAMLGenerator.Feature.MINIMIZE_QUOTES)
+            .disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)
+    ).apply {
+        findAndRegisterModules()
+        setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
+        disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+    }
+}
 
 val Iterable<Resource>.echoString: String
     get():String = StringWriter().use { stringWriter ->

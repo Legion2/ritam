@@ -2,6 +2,7 @@ package io.github.legion2.tosca_orchestrator.tosca.model
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.github.legion2.tosca_orchestrator.tosca.definitions.ServiceTemplateDefinition
+import io.github.legion2.tosca_orchestrator.tosca.definitions.toscaYamlMapper
 import java.io.InputStream
 import java.net.URI
 import java.nio.file.Files
@@ -35,7 +36,7 @@ fun loadMetadata(csarBasePath: Path): ToscaMetaFile {
 
     } else {
         val yamlFile = Files.newDirectoryStream(csarBasePath, "*.{yaml,yml}").use { it.toList() }.single().toUri()
-        val serviceTemplateDefinition: ServiceTemplateDefinition = objectMapper.readValue(yamlFile.toURL())
+        val serviceTemplateDefinition = toscaYamlMapper.readValue<ServiceTemplateDefinition>(yamlFile.toURL())
         val metadata = serviceTemplateDefinition.metadata.orEmpty()
         ToscaMetaFile(
             "1.1",

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.github.legion2.tosca_orchestrator.tosca.definitions.ImportDefinition
 import io.github.legion2.tosca_orchestrator.tosca.definitions.ServiceTemplateDefinition
+import io.github.legion2.tosca_orchestrator.tosca.definitions.toscaYamlMapper
 import java.net.URI
 import java.util.*
 
@@ -83,8 +84,6 @@ private fun importAll(rootImportInfo: ImportInfo): Pair<ImportedServiceTemplate,
     return serviceTemplateDefinitions.getValue(rootNamespace) to serviceTemplateDefinitions
 }
 
-val objectMapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
-
 /**
  * @param contextPath is the uri from which to resolve relative URIs
  */
@@ -97,7 +96,7 @@ private fun import(importDefinition: ImportDefinition, contextPath: URI): Import
     //TODO repository
 
     val serviceTemplateDefinition =
-        runCatching { objectMapper.readValue<ServiceTemplateDefinition>(uri.toURL()) }.addExceptionContextInfo { "Can not load Service Template: $uri" }
+        runCatching { toscaYamlMapper.readValue<ServiceTemplateDefinition>(uri.toURL()) }.addExceptionContextInfo { "Can not load Service Template: $uri" }
     val namespace = namespaceFor(serviceTemplateDefinition.namespace, uri)
     return ImportInfo(namespace, serviceTemplateDefinition, uri, serviceTemplateDefinition.namespace == null)
 }

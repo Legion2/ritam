@@ -1,4 +1,4 @@
-package io.github.legion2.tosca_orchestrator.api
+package io.github.legion2.tosca_orchestrator.api.mapper
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -10,7 +10,6 @@ import javax.inject.Singleton
 @Singleton
 class RegisterCustomModuleCustomizer : ObjectMapperCustomizer {
     override fun customize(mapper: ObjectMapper) {
-        mapper.registerKotlinModule()
         mapper.setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
     }
