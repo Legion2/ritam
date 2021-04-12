@@ -2,6 +2,7 @@ package io.github.legion2.tosca_orchestrator.cli
 
 import com.github.ajalt.clikt.completion.CompletionCandidates
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.context
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
@@ -16,6 +17,9 @@ class RitamCli : CliktCommand(name = "ritam", autoCompleteEnvvar = "RITAM_CLI_CO
 
     init {
         versionOption("0.4.0-SNAPSHOT")
+        context {
+            autoEnvvarPrefix = "RITAM_CLI"
+        }
     }
 
     override fun run() {
