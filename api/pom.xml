@@ -7,18 +7,18 @@
     <parent>
         <groupId>io.github.legion2</groupId>
         <artifactId>ritam</artifactId>
-        <version>0.4.0-SNAPSHOT</version>
+        <version>0.4.0</version>
     </parent>
     <dependencies>
         <dependency>
             <groupId>io.github.legion2</groupId>
             <artifactId>ritam-core</artifactId>
-            <version>0.4.0-SNAPSHOT</version>
+            <version>0.4.0</version>
         </dependency>
         <dependency>
             <groupId>io.github.legion2</groupId>
             <artifactId>ritam-model</artifactId>
-            <version>0.4.0-SNAPSHOT</version>
+            <version>0.4.0</version>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
