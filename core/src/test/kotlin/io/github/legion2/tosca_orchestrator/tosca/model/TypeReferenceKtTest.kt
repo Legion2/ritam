@@ -13,6 +13,7 @@ internal class TypeReferenceKtTest {
     fun testResolveReference() {
         val myNamespace = Namespace(URI("https://my.org"))
         val otherNamespace = Namespace(URI("https://other.com"))
+        val namespaceWithTrailingSlash = Namespace(URI("https://exampe.org/path/"))
 
         val myType = "myType"
         val otherType = "otherType"
@@ -22,7 +23,8 @@ internal class TypeReferenceKtTest {
             mapOf(
                 myNamespace to mapOf(myType to 1),
                 tosca to mapOf(toscaType to 1),
-                otherNamespace to mapOf(otherType to 1, myType to 2)
+                otherNamespace to mapOf(otherType to 1, myType to 2),
+                namespaceWithTrailingSlash to mapOf(otherType to 1)
             )
 
         val resolver = createTypeReferenceResolver(
@@ -43,6 +45,11 @@ internal class TypeReferenceKtTest {
         )
         MatcherAssert.assertThat(resolver("other:otherType"), `is`(TypeReference(otherNamespace, otherType)))
         MatcherAssert.assertThat(resolver("other:myType"), `is`(TypeReference(otherNamespace, myType)))
+
+        MatcherAssert.assertThat(
+            resolver("https://exampe.org/path/otherType"),
+            `is`(TypeReference(namespaceWithTrailingSlash, otherType))
+        )
 
         MatcherAssert.assertThat(resolver("toscaType"), `is`(TypeReference(tosca, toscaType)))
         MatcherAssert.assertThat(

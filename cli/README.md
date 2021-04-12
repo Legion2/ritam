@@ -41,14 +41,18 @@ Supported resource types are:
 ## Examples
 Get all resources of a CRC Model Type:
 `ritam get application-templates`
+
 Or get a specific CRC Model by name:
 `ritam get devices device1`
 
+The apply command is idempotent, it creates or updates a CRC Model. To apply a CRC Model definition file call:
+`ritam apply application-templates my-application-template.yaml`
+
 Delete a CRC Model:
 `ritam delete application-templates temperature-app`
+
 The deletion is asynchronous, to wait for its completion use the `--wait` or `-w` option:
 `ritam delete application-templates temperature-app -w`
-
 
 ## Build the CLI
 
