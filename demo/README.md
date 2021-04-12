@@ -1,13 +1,11 @@
 # Demo of RITAM
 
-This demo shown how RITAM manages IoT devices and applications. In this demo the devices IoT environment is simulated by using multiple docker container connected via a network.
-
+This demo shows how RITAM manages IoT devices and applications. In this demo the devices IoT environment is simulated by using multiple docker containers connected via a network.
 
 ## Prerequisite
 
 * Docker
 * Docker-compose
-* Java JDK 11 or higher to build the prototype
 
 ## Setup
 
