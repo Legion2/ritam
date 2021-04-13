@@ -81,7 +81,7 @@ class ToscaOrchestratorResource {
         val metaFile = try {
             loadMetadata(csarBasePath)
         } catch (e: IllegalArgumentException) {
-            throw WebApplicationException(e.message, 400)
+            throw ClientErrorException(400, e)
         }
 
         return try {
@@ -92,9 +92,9 @@ class ToscaOrchestratorResource {
                 )
             )
         } catch (e: IllegalArgumentException) {
-            throw WebApplicationException(e.message, 400)
+            throw ClientErrorException(400, e)
         } catch (e: IllegalStateException) {
-            throw WebApplicationException(e.message, 409)
+            throw ClientErrorException(409, e)
         }
     }
 }

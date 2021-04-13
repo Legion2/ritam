@@ -9,7 +9,6 @@ data class Device(val properties: Map<String, String>, val url: URI) {
     companion object
 }
 
-
 @optics
 data class DeviceStatus(
         val message: String,

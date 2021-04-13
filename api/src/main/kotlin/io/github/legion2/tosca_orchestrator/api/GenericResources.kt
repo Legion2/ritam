@@ -28,7 +28,7 @@ abstract class GenericResources<T, S, R : Resource<T, S>, B : ResourceStorage<T,
         APIResponse(responseCode = "404", description = "Resource not found")
     )
     fun getResource(@PathParam("name") name: String): R {
-        return storage.getResource(name) ?: throw WebApplicationException(404)
+        return storage.getResource(name) ?: throw NotFoundException()
     }
 
     @POST
@@ -39,11 +39,11 @@ abstract class GenericResources<T, S, R : Resource<T, S>, B : ResourceStorage<T,
         APIResponse(responseCode = "409", description = "Resource already exists")
     )
     fun createResource(@PathParam("name") name: String, resource: R): R {
-        if (name != resource.metadata.name) throw WebApplicationException(400)
+        if (name != resource.metadata.name) throw ClientErrorException(400)
         try {
             return storage.postResource(resource)
         } catch (e: IllegalStateException) {
-            throw WebApplicationException(e, 409)
+            throw ClientErrorException(409, e)
         }
     }
 
@@ -56,13 +56,13 @@ abstract class GenericResources<T, S, R : Resource<T, S>, B : ResourceStorage<T,
         APIResponse(responseCode = "409", description = "Resource version mismatch")
     )
     fun updateResource(@PathParam("name") name: String, resource: R): R {
-        if (name != resource.metadata.name) throw WebApplicationException(400)
+        if (name != resource.metadata.name) throw ClientErrorException(400)
         try {
             return storage.putResource(resource)
         } catch (e: NoSuchElementException) {
-            throw WebApplicationException(e, 404)
+            throw NotFoundException(e)
         } catch (e: IllegalStateException) {
-            throw WebApplicationException(e, 409)
+            throw ClientErrorException(409, e)
         }
     }
 
