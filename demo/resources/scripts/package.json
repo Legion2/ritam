@@ -4,6 +4,5 @@
   "description": "",
   "dependencies": {
     "pm2": "^4.5.5"
-  },
-  "devDependencies": {}
+  }
 }

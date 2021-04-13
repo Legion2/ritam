@@ -2,5 +2,5 @@
 
 set -e -o pipefail
 
-pm2 ping &> /dev/null
+PM2_HOME=/etc/.pm2 pm2 ping &> /dev/null
 exec /deployments/run-java.sh "$@"

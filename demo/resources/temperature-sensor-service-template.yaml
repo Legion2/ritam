@@ -29,6 +29,19 @@ node_types:
           capability: MQTT-Broker-Endpoint
           relationship: tosca.relationships.ConnectsTo
           occurrences: [1, 1]
+    artifacts:
+      index.mjs:
+        type: ritam:ritam.artifacts.Implementation.JavaScript
+        file: sensor/index.mjs
+        deploy_path: /opt/temp-reader/index.mjs
+      package.json:
+        type: File
+        file: sensor/package.json
+        deploy_path: /opt/temp-reader/package.json
+      package-lock.json:
+        type: File
+        file: sensor/package-lock.json
+        deploy_path: /opt/temp-reader/package-lock.json
     interfaces:
       Reconciler:
         type: ritam:ritam.interfaces.Reconciler
@@ -41,6 +54,15 @@ node_types:
             default: { get_property: [SELF, location] }
           MQTT_URL:
             type: string
+          DA_INDEX:
+            type: string
+            default: { get_artifact: [SELF, index.mjs]}
+          DA_PACKAGE:
+            type: string
+            default: { get_artifact: [SELF, package.json]}
+          DA_PACKAGE_LOCK:
+            type: string
+            default: { get_artifact: [SELF, package-lock.json]}
         operations:
           reconcile:
             implementation:
