@@ -1,4 +1,4 @@
-# Reconciliation based IoT Application Management (RITAM)
+# Reconciliation-based IoT Application Management (RITAM)
 This project is part of the master's thesis "Concept and Implementation of a TOSCA Orchestration Engine for Edge and IoT Infrastructures".
 This repository contains the prototype of RITAM.
 
@@ -29,7 +29,7 @@ This will generate the `cli/build/ritam-*.zip` files, which contain all executab
 More infos about the CLI can be found in the [`cli/`](cli) directory.
 
 ## TOSCA Reconciler Interface Usage
-RITAM introduces the TOSCA Reconciler Interface, for reconciliation based TOSCA Node operations.
+RITAM introduces the TOSCA Reconciler Interface, for reconciliation-based TOSCA Node operations.
 It has the name `ritam.interfaces.Reconciler` and is part of the `https://legion2.github.io/ritam` namespace.
 It can be imported from `https://legion2.github.io/ritam/ritam.yaml`.
 The interface provides two operations: `reconcile` and `delete`.
