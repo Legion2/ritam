@@ -10,7 +10,7 @@
     <properties>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
-        <quarkus.platform.version>1.13.5.Final</quarkus.platform.version>
+        <quarkus.platform.version>1.13.6.Final</quarkus.platform.version>
         <quarkus.container-image.build>true</quarkus.container-image.build>
         <quarkus.container-image.group>legion2</quarkus.container-image.group>
         <quarkus.container-image.registry>ghcr.io</quarkus.container-image.registry>
