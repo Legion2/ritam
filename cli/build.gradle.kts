@@ -37,7 +37,7 @@ runtime {
     }
 }
 
-val ktorVersion = "1.5.4"
+val ktorVersion = "1.6.0"
 val cliktVersion = "3.2.0"
 val jacksonVersion = "2.12.3"
 val jsonPatchVersion = "1.13"
