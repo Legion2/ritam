@@ -23,7 +23,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <quarkus-plugin.version>1.13.7.Final</quarkus-plugin.version>
-        <arrow.version>0.11.0</arrow.version>
+        <arrow.version>0.13.2</arrow.version>
     </properties>
     <modules>
         <module>core</module>
