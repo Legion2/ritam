@@ -14,7 +14,7 @@
         <quarkus.container-image.build>true</quarkus.container-image.build>
         <quarkus.container-image.group>legion2</quarkus.container-image.group>
         <quarkus.container-image.registry>ghcr.io</quarkus.container-image.registry>
-        <kotlin.version>1.5.21</kotlin.version>
+        <kotlin.version>1.5.30</kotlin.version>
         <compiler-plugin.version>3.8.1</compiler-plugin.version>
         <surefire-plugin.version>2.22.2</surefire-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
